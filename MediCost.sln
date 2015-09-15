@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediCostAPI", "MediCostAPI\MediCostAPI.csproj", "{903A435C-5962-40EF-95D8-CAA1BA161523}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediCostUI", "MediCostUI\MediCostUI.csproj", "{9083D8E4-99C0-4253-B2CA-C5D68C1DC743}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediCost.Tests", "MediCost.Tests\MediCost.Tests.csproj", "{B3CDEA6A-24EE-4F8E-825D-0A641EDBB8B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{903A435C-5962-40EF-95D8-CAA1BA161523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{903A435C-5962-40EF-95D8-CAA1BA161523}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{903A435C-5962-40EF-95D8-CAA1BA161523}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{903A435C-5962-40EF-95D8-CAA1BA161523}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9083D8E4-99C0-4253-B2CA-C5D68C1DC743}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9083D8E4-99C0-4253-B2CA-C5D68C1DC743}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9083D8E4-99C0-4253-B2CA-C5D68C1DC743}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9083D8E4-99C0-4253-B2CA-C5D68C1DC743}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3CDEA6A-24EE-4F8E-825D-0A641EDBB8B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3CDEA6A-24EE-4F8E-825D-0A641EDBB8B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3CDEA6A-24EE-4F8E-825D-0A641EDBB8B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3CDEA6A-24EE-4F8E-825D-0A641EDBB8B1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

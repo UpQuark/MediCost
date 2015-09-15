@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>MediCost</title>
+
+    <!--Shortcut icon appears next to title-->
+    <link rel="SHORTCUT ICON" type="image/x-icon" href="../content/static/shortcut.jpg">
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAX3zGjL4x7v95Ku35GeeAbEfWyciUckCY&sensor=false&libraries=geometry"></script>
+
+</head>
+<body id="body">
+    <div id="right-panel">
+        <div>
+            <h2> Selected Office </h2>
+        </div>
+        <div>
+            <span id="address"></span><br />
+            <span id="city"></span>,&nbsp;
+            <span id="state"></span>&nbsp;
+            <span id="zip"></span>
+        </div><br />
+        <div id="providerList">
+            <h2>Providers</h2>
+            <table id="providersListTable"></table>
+        </div>
+    </div>
+    <div id="left-panel">
+        <div>
+            <h2 id="leftPanelProviderName"></h2>
+            <table class="scrollTable" id="cost-table">
+                <thead id="table_header">
+                    <tr class="table-head">
+                        <td>HCPS <span class="sort-marker"></td>
+                        <td>Description <span class="sort-marker"></td>
+                        <td>Allowed <span class="sort-marker"></td>
+                        <td>Submitted <span class="sort-marker"></td>
+                        <td>Payment <span class="sort-marker"></td>
+                        <td>Estimate <span class="sort-marker"></td>
+                    </tr>
+                </thead>
+                <tbody id="table_content"></tbody>
+            </table>
+        </div>
+
+    </div>
+    <div id="header">
+        <div id="pageHeaderText">
+            <img id="headerImage" src="../content/static/logo3.png">
+        </div>
+        <div id="centerSearchText">
+            Search for a provider and procedure
+        </div>
+        <div id="search_components" class="input-group">
+            <table id="search_input_table">
+                <tr>
+                    <td>
+                        <input id="addressInput" class="searchFormField" placeholder="Enter city..." type="text" value="" name="city">
+                    </td>
+                    <td>
+                        <input id="specialtyInput" class="searchFormField" placeholder="Enter specialty..." type="text" value="" name="specialty">
+                    </td>
+                    <td>
+                        <input id="procedureInput" class="searchFormField" placeholder="Enter procedure code..." type="text" value="">
+                    </td>
+                </tr>
+            </table>
+            <button id="searchbtn" type="button">Search</button>
+            <span id="loadingIcon"><img src="../content/static/ajax-loader.gif" /></span>
+        </div>
+    </div>
+    <div id="map-canvas"></div>
+    <div id="offices-panel">
+        <h2>All Offices</h2>
+        <table class="scrollTable" id="office-table">
+            <thead id="table_header">
+                <tr class="table-head">
+                    <td><span>Street</span> <span class="sort-marker"></span></td>
+                    <td><span>City</span> <span class="sort-marker"></span></td>
+                    <td><span>State</span> <span class="sort-marker"></span></td>
+                    <td><span>Zip</span> <span class="sort-marker"></span></td>
+                </tr>
+            </thead>
+            <tbody id="table_content"></tbody>
+        </table>
+    </div>
+    <script type="text/javascript">
+            $(document).ready(function () {
+                var mediCost = new MediCost();
+            });
+    </script>
+</body>
+</html>
+
