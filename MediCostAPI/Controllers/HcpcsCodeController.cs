@@ -10,14 +10,13 @@ using System.Linq;
 
 namespace MediCostAPI.Controllers
 {
-    public class SpecialtiesController : ApiController
+    public class HcpcsCodeController : ApiController
     {
-        public string GetSpecialties()
+        public string GetHcpcsCode()
         {
             SqlDataAdapter da = null;
-            var specialtiesTable = new DataTable();
+            var hcpcsTable = new DataTable();
             var config = new ConfigManager();
-
             string connString = config.getConnectionString();
 
             try
@@ -25,14 +24,14 @@ namespace MediCostAPI.Controllers
                 using (SqlConnection con = new SqlConnection(connString))
                 {
                     // StoreProcedure retrieves one line per unique provider NPI
-                    using (SqlCommand cmd = new SqlCommand("spGetSpecialties", con))
+                    using (SqlCommand cmd = new SqlCommand("spGethcpcsCode", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         con.Open();
                         cmd.ExecuteNonQuery();
                         da = new SqlDataAdapter(cmd);
                         // Query DB and fill DataTable
-                        da.Fill(specialtiesTable);
+                        da.Fill(hcpcsTable);
                         con.Close();
                     }
                 }
@@ -47,32 +46,21 @@ namespace MediCostAPI.Controllers
                 throw (exp);
             }
 
-            var specialties = new Dictionary<string, Specialty>();
+            var hcpcs = new Dictionary<string, HcpcsCode>();
 
-            foreach (DataRow row in specialtiesTable.Rows)
+            foreach (DataRow row in hcpcsTable.Rows)
             {
-                if (!specialties.ContainsKey(row["specialtyName"].ToString()))
+                var hcpcsCode = new HcpcsCode
                 {
-                    var specialty = new Specialty
-                    {
-                        Id = -1,//int.Parse(row["specialtyId"].ToString()),
-                        SpecialtyName = row["specialtyName"].ToString(),
-                        SpecialtyAlternateNames = new List<string>()
-                        //{
-                        //    row["specialtyAlternateName"].ToString()
-                        //}
-                    };
-                    specialties.Add(row["specialtyName"].ToString(), specialty);
-                }
-                else
-                {
-                    specialties[row["specialtyName"].ToString()].SpecialtyAlternateNames.Add(row["specialtyAlternateName"].ToString());
-                }
+                    Code = row["hcpcs_code"].ToString(),
+                    Description = row["hcpcs_description"].ToString()
+                };
+                hcpcs.Add(row["hcpcs_code"].ToString(), hcpcsCode);
             }
 
             var serializer = new JavaScriptSerializer();
             serializer.MaxJsonLength = Int32.MaxValue;
-            return serializer.Serialize(specialties);
+            return serializer.Serialize(hcpcs);
         }
     }
 }

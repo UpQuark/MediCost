@@ -104,3 +104,4 @@ packages/
 ProviderMatrixAPI/Properties/PublishProfiles/
 ProviderMatrixCordovaAndroid/bld/
 DB/medicostconfig.json
+MediCostAPI/medicostconfig.json

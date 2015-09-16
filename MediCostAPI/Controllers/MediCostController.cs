@@ -19,10 +19,9 @@ namespace MediCostAPI.Controllers
             var officeTable = new DataTable();
             var providerTable = new DataTable();
             var costTable = new DataTable();
+            var config = new ConfigManager();
 
-            // Connection string lives in web.config
-            //string connString = ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
-            string connString = "Data Source=poppy.arvixe.com;Database=MediCost;User Id=sennis;Password=necratog5data;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False";
+            string connString = config.getConnectionString();
 
             try
             {
@@ -141,7 +140,7 @@ namespace MediCostAPI.Controllers
                     AddressID = r[1].ToString(),
                     MedicareParticipationIndicator = r[2].ToString(),
                     PlaceOfService = r[3].ToString(),
-                    HcpsCode = r[4].ToString(),
+                    hcpcsCode = r[4].ToString(),
                     LineServiceCount = r[5].ToString(),
                     BenefitsUniqueCount = r[6].ToString(),
                     BenefitsDayServiceCount = r[7].ToString(),
@@ -159,7 +158,7 @@ namespace MediCostAPI.Controllers
                     Country = r[19].ToString(),
                     Latitude = r[21].ToString(),
                     Longitude = r[20].ToString(),
-                    HcpsCode2 = r[22].ToString(),
+                    hcpcsCode2 = r[22].ToString(),
                     HcpcsDescription = r[23].ToString(),
                     LastName = r[24].ToString(),
                     FirstName = r[25].ToString(),
@@ -188,7 +187,7 @@ namespace MediCostAPI.Controllers
 
             foreach (var cost in costsList)
             {
-                officeDictionary[cost.AddressID].Providers[cost.Npi].Costs[cost.HcpsCode] = cost;
+                officeDictionary[cost.AddressID].Providers[cost.Npi].Costs[cost.hcpcsCode] = cost;
             }
 
             var keysToRemove = new List<string>();

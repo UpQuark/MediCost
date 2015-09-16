@@ -11,7 +11,7 @@ namespace MediCost.Tests
         public void TestDbConfigRetrieval()
         {
             var config = new ConfigManager();
-            var connString = config.readConfig();
+            var connString = config.getConnectionString();
         }
     }
 }

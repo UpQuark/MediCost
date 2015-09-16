@@ -376,7 +376,7 @@ MediCost.prototype.LeftPanel.prototype.draw = function (provider) {
 
     $.each(provider.Costs, function (a, cost) {
         var toAppend = '<tr class="leftPanelCostRow"><td class=panel-link>'
-                       + cost.HcpsCode
+                       + cost.hcpcsCode
                        + "</td><td class=panel-link>"
                        + cost.HcpcsDescription
                        + "</td><td class=panel-link>$"

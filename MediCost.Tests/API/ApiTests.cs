@@ -15,5 +15,13 @@ namespace MediCost.Tests
             var response = specialtiesController.GetSpecialties();
             Assert.IsTrue(response.ToString().Contains("Cardiology"));
         }
+
+        [TestMethod]
+        public void TesthcpcsApiCall()
+        {
+            var hcpcsController = new HcpcsCodeController();
+            var response = hcpcsController.GetHcpcsCode();
+            Assert.IsTrue(response.ToString().Contains("Anesth salivary gland"));
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace MediCostAPI.Models
         public String AddressID { get; set; }
         public String MedicareParticipationIndicator { get; set; }
         public String PlaceOfService { get; set; }
-        public String HcpsCode { get; set; }
+        public String hcpcsCode { get; set; }
         public String LineServiceCount { get; set; }
         public String BenefitsUniqueCount { get; set; }
         public String BenefitsDayServiceCount { get; set; }
@@ -29,7 +29,7 @@ namespace MediCostAPI.Models
         public String Country { get; set; }
         public String Latitude { get; set; }
         public String Longitude { get; set; }
-        public String HcpsCode2 { get; set; }
+        public String hcpcsCode2 { get; set; }
         public String HcpcsDescription { get; set; }
         public String LastName { get; set; }
         public String FirstName { get; set; }

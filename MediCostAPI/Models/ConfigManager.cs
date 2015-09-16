@@ -10,16 +10,13 @@ namespace MediCostAPI.Models
     public class ConfigManager
     {
         // Returns DB ConnectionString
-        public string readConfig()
+        public string getConnectionString()
         {
-            using (StreamReader r = new StreamReader("../../../DB/medicostconfig.json"))
+            string path = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            using (StreamReader r = new StreamReader(path + "/medicostconfig.json"))
             {
                 string json = r.ReadToEnd();
-                //object jsonRead = JsonConvert.DeserializeObject<object>(json);
-                //return "";
-
                 var serializer = new JavaScriptSerializer();
-                //serializer.MaxJsonLength = Int32.MaxValue;
                 Dictionary<string, string> JsonItem = serializer.Deserialize<Dictionary<string, string>>(json);
                 return JsonItem["connectionString"];
             }

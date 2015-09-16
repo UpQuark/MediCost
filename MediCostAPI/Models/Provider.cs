@@ -25,7 +25,7 @@ namespace MediCostAPI.Models
         public String EntityCode { get; set; }
         public String Specialty { get; set; }
 
-        // Key is HCPS code
+        // Key is hcpcs code
         public Dictionary<string, Cost> Costs { get; set; }
     }
 }
