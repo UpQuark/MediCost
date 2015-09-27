@@ -4,15 +4,11 @@
 // Constructor
 function MediCost() {
     
-    this.MediCostData = {
-        // Map variables TODO: store in the map data structure?
-
-        geocoder : new google.maps.Geocoder(),         // object that will turn addresses into coordinates
-        map : null,                                    // the actual google map 
-        radius : null,                                 // range user is looking for providers in
-        
+    this.MediCostData = {      
         // Central data structures
-        offices : null,                                  // will hold all offices acquired from database
+        offices:     null,                             // will hold all offices acquired from database
+        specialties: null,
+        hcpcsCodes:  null,
         
         // Miscellany
         bouncingMarker: null,
@@ -28,11 +24,11 @@ function MediCost() {
         officeTable : null
     };
 
-    this.MediCostPageElems.mapCanvas = new this.MapCanvas(this, this.MediCostData, this.MediCostPageElems);
-    this.MediCostPageElems.leftPanel = new this.LeftPanel(this, this.MediCostData, this.MediCostPageElems);
-    this.MediCostPageElems.rightPanel = new this.RightPanel(this, this.MediCostData, this.MediCostPageElems);
+    this.MediCostPageElems.mapCanvas   = new this.MapCanvas(this, this.MediCostData, this.MediCostPageElems);
+    this.MediCostPageElems.leftPanel   = new this.LeftPanel(this, this.MediCostData, this.MediCostPageElems);
+    this.MediCostPageElems.rightPanel  = new this.RightPanel(this, this.MediCostData, this.MediCostPageElems);
     this.MediCostPageElems.officeTable = new this.OfficeTable(this, this.MediCostData, this.MediCostPageElems);
-    this.MediCostPageElems.header = new this.Header(this, this.MediCostData, this.MediCostPageElems);
+    this.MediCostPageElems.header      = new this.Header(this, this.MediCostData, this.MediCostPageElems);
     this.apiAgent = new this.ApiAgent(this.MediCostData);
     
     this.MediCostPageElems.header.init();
@@ -174,17 +170,17 @@ MediCost.prototype.Header.prototype.search = function () {
  ***********************************************/
 // Constructor
 MediCost.prototype.MapCanvas = function (MediCost, MediCostData, MediCostPageElems) {
-    /* Note: This code seems to conventionally live in an "initialize()" function */ 
     this.MediCostData = MediCostData;
     this.MediCostPageElems = MediCostPageElems;
     this.MediCost = MediCost;
     this.ApiAgent = MediCost.ApiAgent;
-    
-    
+
+    this.Geocoder = new google.maps.Geocoder(),         // Maps geocoder for input address
+    this.Map = null                                    // Google maps instance
 };
 
 MediCost.prototype.MapCanvas.prototype.initialize = function () {
-    // Center map over Waterloo IA
+
     var latlng = new google.maps.LatLng(42.492786, -92.342578);
     var mapOptions = {
         zoom: 8,
@@ -198,21 +194,7 @@ MediCost.prototype.MapCanvas.prototype.initialize = function () {
     };
 
     // Add google map to canvas
-    this.MediCostData.map = new google.maps.Map($('#map-canvas').get(0), mapOptions);
-
-    // Store coordinates of current location 
-    // TODO: Stick 'here' in some MediCost class variable? Where is that even stored
-    //if (navigator.geolocation) {
-    //    navigator.geolocation.getCurrentPosition(function (position) {
-    //        here = new google.maps.LatLng(position.coords.latitude,
-    //                                    position.coords.longitude);
-    //    }, function () {
-    //        handleNoGeolocation(true);
-    //    });
-    //} else {
-    //    // Browser doesn't support Geolocation
-    //    handleNoGeolocation(false);
-    //}
+    this.Map = new google.maps.Map($('#map-canvas').get(0), mapOptions);
 }
 
 // TODO: Change to jquery foreach
@@ -233,13 +215,15 @@ MediCost.prototype.MapCanvas.prototype.fillFrame = function () {
 // Center map on inputted city and mark nearby offices on map
 MediCost.prototype.MapCanvas.prototype.mapOfficesFromAddress = function(address, specialty) {
     var MediCost = this.MediCost;
+    var Map = this.Map;
+    var Geocoder = this.Geocoder;
 
     // Geocode the provided address parameter
-    this.MediCostData.geocoder.geocode({ 'address': address }, function (results, status) {
+    Geocoder.geocode({ 'address': address }, function (results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             center = results[0].geometry.location;
-            MediCost.MediCostData.map.setCenter(center);
-            MediCost.MediCostData.map.fitBounds(results[0].geometry.viewport);
+            Map.setCenter(center);
+            Map.fitBounds(results[0].geometry.viewport);
         } else {
             alert('Could not geocode address: ' + status);
             return;
@@ -262,7 +246,6 @@ MediCost.prototype.MapCanvas.prototype.mapOfficesFromAddress = function(address,
     });
 };
 
-
 // Places office markers on map
 MediCost.prototype.MapCanvas.prototype.placeOffice = function(office) {
     // location of office
@@ -274,17 +257,13 @@ MediCost.prototype.MapCanvas.prototype.placeOffice = function(office) {
     }
 };
 
-/**
- * Creates Google Maps Marker for office
- * @param {Google LatLng} pos Location of office
- * @param {object} hospital The hospital associate with this marker
- * @return A Google Map marker for the given office
- */
 MediCost.prototype.MapCanvas.prototype.createMarker = function(position, office) {
     var MediCost = this.MediCost;
+    var Map = this.Map;
+
     var marker = new google.maps.Marker({
         position: position,
-        map: MediCost.MediCostData.map,
+        map: this.Map,
         animation: google.maps.Animation.DROP,
         title: office.AddressID,
         office: office
@@ -303,7 +282,7 @@ MediCost.prototype.MapCanvas.prototype.createMarker = function(position, office)
             var office = this.office;
             MediCost.MediCostPageElems.rightPanel.draw(office);
             var latlng = new google.maps.LatLng(office.Latitude, office.Longitude);
-            MediCost.MediCostData.map.panTo(latlng);
+            Map.panTo(latlng);
         }
     };
     google.maps.event.addListener(marker, 'click', clickListener);
@@ -333,7 +312,7 @@ MediCost.prototype.ApiAgent = function (MediCostData) {
 MediCost.prototype.ApiAgent.prototype.getOffices = function (address, specialty) {
     var MediCostData = this.MediCostData;
     return $.ajax({
-        url: 'http://localhost:6060/MediCostAPI/api/MediCost/',
+        url: '/MediCostAPI/api/MediCost/',
         type: "GET",
         crossDomain: "true",
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -522,22 +501,4 @@ function isNullOrWhitespace(input) {
     if (typeof input === 'undefined' || input == null) return true;
 
     return input.replace(/\s/g, '').length < 1;
-}
-
-
-
-/***********************************************
- *  Error handlers
- ***********************************************/
-/**
- * Handles errors encountered from geolocation
- * @param {boolean} errorFlag
- */
-function handleNoGeolocation(errorFlag) {
-    if (errorFlag) {
-        var content = 'Error: The Geolocation service failed.';
-    } else {
-        var content = 'Error: Your browser doesn\'t support geolocation.';
-    }
-    console.log(content);
 }

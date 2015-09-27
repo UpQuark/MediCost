@@ -2,12 +2,20 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MediCostAPI;
 using MediCostAPI.Controllers;
+using MediCostAPI.Models;
 
 namespace MediCost.Tests
 {
     [TestClass]
     public class ApiTests
     {
+        [TestMethod]
+        public void TestMediCostApiCall()
+        {
+            var medicostController = new MediCostController();
+            var response = medicostController.GetMediCost(new MediCostApiQuery{City = "Boston", Specialty = "Cardiology"});
+        }
+
         [TestMethod]
         public void TestSpecialtiesApiCall()
         {
@@ -17,7 +25,7 @@ namespace MediCost.Tests
         }
 
         [TestMethod]
-        public void TesthcpcsApiCall()
+        public void TestHcpcsApiCall()
         {
             var hcpcsController = new HcpcsCodeController();
             var response = hcpcsController.GetHcpcsCode();

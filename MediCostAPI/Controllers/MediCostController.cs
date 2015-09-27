@@ -66,6 +66,7 @@ namespace MediCostAPI.Controllers
                         cmd.Parameters.Add("@specialty", SqlDbType.VarChar).Value = queryModel.Specialty ?? Convert.DBNull;
 
                         con.Open();
+                        cmd.CommandTimeout = 0;
                         cmd.ExecuteNonQuery();
                         da = new SqlDataAdapter(cmd);
 
