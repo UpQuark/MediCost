@@ -169,12 +169,14 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HcpcsCodeController.cs" />
+    <Compile Include="Controllers\LocationsController.cs" />
     <Compile Include="Controllers\MediCostController.cs" />
     <Compile Include="Controllers\SpecialtiesController.cs" />
     <Compile Include="DatTableToJSON.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\City.cs" />
     <Compile Include="Models\ConfigManager.cs" />
     <Compile Include="Models\Cost.cs" />
     <Compile Include="Models\HcpcsCode.cs" />
@@ -188,6 +190,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Services\DbSprocAgent.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

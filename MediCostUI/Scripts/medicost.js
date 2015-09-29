@@ -3,7 +3,7 @@
  ***********************************************/
 // Constructor
 function MediCost() {
-    
+
     this.MediCostData = {      
         // Central data structures
         offices:     null,                             // will hold all offices acquired from database
@@ -11,7 +11,7 @@ function MediCost() {
         hcpcsCodes:  null,
         
         // Miscellany
-        bouncingMarker: null,
+        activeMarker: null,
         procedure: "",
         activeCost: null,
     };
@@ -69,25 +69,12 @@ MediCost.prototype.Header = function (MediCost, MediCostData, MediCostPageElems)
     this.MediCost = MediCost;
 
     // Attach loading icon show/hide to Ajax events
-    /*$(document).on({
+    $(document).on({
         ajaxStart: function () {
             $('#loadingIcon').show();
         },
         ajaxStop: function () {
             $('#loadingIcon').hide();
-        }
-    });*/
-
-    //Listener for slide click (remove?)
-    $('#details_btn').click(function () {
-        if ($('#sidebar').css('display') != 'none') {
-            if ($('#details_btn')[0].innerText == 'Show Less') {
-                $('#details_btn')[0].innerText = 'Show More';
-                $('#sidebar_table').animate({ 'right': '-=420px' });
-            } else {
-                $('#details_btn')[0].innerText = 'Show Less';
-                $('#sidebar_table').animate({ 'right': '+=420px' });
-            }
         }
     });
 };
@@ -97,7 +84,82 @@ MediCost.prototype.Header = function (MediCost, MediCostData, MediCostPageElems)
 MediCost.prototype.Header.prototype.init = function () {
     // Attach UI event handlers
     var MediCost = this.MediCost;
+    var apiAgent = new MediCost.ApiAgent();
+    
+    $.when(MediCost.apiAgent.getSpecialties()).done(function (response) {
+        var parsedResponse = JSON.parse(response);
 
+        arrayResponse = [];
+        $.each(parsedResponse, function (key, specialty) {
+            arrayResponse.push(key)
+        });
+
+        var specialties = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: arrayResponse
+        });
+
+        $('#specialtyInput.typeahead').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        },
+        {
+            name: 'specialties',
+            source: specialties
+        });
+    });
+    $.when(MediCost.apiAgent.getHcpcsCodes()).done(function (response) {
+        var parsedResponse = JSON.parse(response);
+
+        arrayResponse = [];
+        $.each(parsedResponse, function (key, code) {
+            arrayResponse.push(code.Code + ': ' + code.Description);
+        });
+
+        var hcpcsCodes = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: arrayResponse
+        });
+
+        $('#procedureInput.typeahead').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        },
+        {
+            name: 'procedure',
+            source: hcpcsCodes
+        });
+    });
+    $.when(MediCost.apiAgent.getLocations()).done(function (response) {
+        var parsedResponse = JSON.parse(response);
+
+        arrayResponse = [];
+        $.each(parsedResponse, function (key, city) {
+            arrayResponse.push(city.Name);
+        });
+
+        var locations = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: arrayResponse
+        });
+
+        $('#addressInput.typeahead').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        },
+        {
+            name: 'location',
+            source: locations
+        })
+    });
+
+    
     /*
      * Why is this function here? The UI requires a reference to MediCostPageElems that is not set
      * as of the constructor call. This is a temporary solution that should eventually be replaced.
@@ -128,7 +190,7 @@ MediCost.prototype.Header.prototype.search = function () {
     this.MediCostPageElems.rightPanel.clear();
     this.MediCostPageElems.leftPanel.clear();
 
-    
+    // Move header to top of screen
     var fades = function () {
         return $.when($("#centerSearchText").fadeOut(), $("#headerImage").fadeOut(), $("#searchbtn").fadeOut()).done()
     }
@@ -136,7 +198,6 @@ MediCost.prototype.Header.prototype.search = function () {
     $.when(fades()).done(function () {
         var cssUpdate = function () {
             return $.when($("#headerImage").css({ "left": "12px", "margin-left": "12px", "margin-top": "4px", "float": "left" }),
-                        $("#searchbtn").appendTo("#search_input_table tr:first"),
                         $("#header").animate({
                             top: "0px",
                             marginTop: "0px",
@@ -145,6 +206,7 @@ MediCost.prototype.Header.prototype.search = function () {
         $.when(cssUpdate()).done(function () {
             $("#headerImage").fadeIn();
             $("#searchbtn").fadeIn();
+            $("#search_buttonloader_wrapper").css('display', 'inline-block')
             $("#header").css({"box-shadow" : "0px 0px 5px 0px rgba(42,42,42,1.2)"})
             MediCost.MediCostPageElems.mapCanvas.initialize();
             MediCost.MediCostPageElems.mapCanvas.fillFrame();
@@ -158,9 +220,7 @@ MediCost.prototype.Header.prototype.search = function () {
             MediCost.MediCostPageElems.mapCanvas.mapOfficesFromAddress(address, specialty);
             $("#map-canvas").fadeIn();
         });
-    });
-
-    
+    });  
 };
 
 
@@ -277,8 +337,8 @@ MediCost.prototype.MapCanvas.prototype.createMarker = function(position, office)
    */
     
     var clickListener = function() {
-        if (MediCost.MediCostData.bouncingMarker != this) {
-            MediCost.MediCostPageElems.mapCanvas.setBouncingMarker(this);
+        if (MediCost.MediCostData.activeMarker != this) {
+            MediCost.MediCostPageElems.mapCanvas.setActiveMarker(this);
             var office = this.office;
             MediCost.MediCostPageElems.rightPanel.draw(office);
             var latlng = new google.maps.LatLng(office.Latitude, office.Longitude);
@@ -289,14 +349,14 @@ MediCost.prototype.MapCanvas.prototype.createMarker = function(position, office)
     return marker;
 };
 
-MediCost.prototype.MapCanvas.prototype.setBouncingMarker = function (marker) {
+MediCost.prototype.MapCanvas.prototype.setActiveMarker = function (marker) {
     var MediCost = this.MediCost;
     // change marker animation
-    if (MediCost.MediCostData.bouncingMarker) {
-        MediCost.MediCostData.bouncingMarker.setAnimation(null);
+    if (MediCost.MediCostData.activeMarker) {
+        MediCost.MediCostData.activeMarker.setAnimation(null);
     }
     marker.setAnimation(google.maps.Animation.BOUNCE);
-    MediCost.MediCostData.bouncingMarker = marker;
+    MediCost.MediCostData.activeMarker = marker;
 }
 
 
@@ -327,7 +387,45 @@ MediCost.prototype.ApiAgent.prototype.getOffices = function (address, specialty)
     });
 };
 
+MediCost.prototype.ApiAgent.prototype.getSpecialties = function () {
+    var MediCostData = this.MediCostData;
+    return $.ajax({
+        url: '/MediCostAPI/api/Specialties/',
+        type: "GET",
+        crossDomain: "true",
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Specialties lookup failed.");
+        },
+        dataType: "JSON"
+    });
+};
 
+MediCost.prototype.ApiAgent.prototype.getHcpcsCodes = function () {
+    return $.ajax({
+        url: '/MediCostAPI/api/HcpcsCode/',
+        type: "GET",
+        crossDomain: "true",
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Code lookup failed.");
+        },
+        dataType: "JSON"
+    });
+};
+
+MediCost.prototype.ApiAgent.prototype.getLocations = function () {
+    return $.ajax({
+        url: '/MediCostAPI/api/Locations/',
+        type: "GET",
+        crossDomain: "true",
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Location lookup failed.");
+        },
+        dataType: "JSON"
+    });
+}
 
 /***********************************************
  *  LeftPanel class
@@ -484,7 +582,7 @@ MediCost.prototype.OfficeTable.prototype.draw = function () {
         var addressId = $(this).data('addressid');
         var office = MediCost.getOfficeByAddressId(addressId);
         MediCost.MediCostPageElems.rightPanel.draw(office);
-        MediCost.MediCostPageElems.mapCanvas.setBouncingMarker(office.marker);
+        MediCost.MediCostPageElems.mapCanvas.setActiveMarker(office.marker);
     })
 
     $("#office-table").tablesorter();
@@ -502,3 +600,11 @@ function isNullOrWhitespace(input) {
 
     return input.replace(/\s/g, '').length < 1;
 }
+
+
+
+
+
+
+
+

@@ -57,22 +57,15 @@
         <div id="centerSearchText">
             Search for a provider and procedure
         </div>
-        <div id="search_components" class="input-group">
-            <table id="search_input_table">
-                <tr>
-                    <td>
-                        <input id="addressInput" class="searchFormField" placeholder="Enter city..." type="text" value="" name="city">
-                    </td>
-                    <td>
-                        <input id="specialtyInput" class="searchFormField" placeholder="Enter specialty..." type="text" value="" name="specialty">
-                    </td>
-                    <td>
-                        <input id="procedureInput" class="searchFormField" placeholder="Enter procedure code..." type="text" value="">
-                    </td>
-                </tr>
-            </table>
-            <button id="searchbtn" type="button">Search</button>
-            <span id="loadingIcon"><img src="../content/static/ajax-loader.gif" /></span>
+        <div id="search_components" class="input-group" >
+            <input id="addressInput" class="searchFormField typeahead" placeholder="Enter city..." type="text" value="" name="city">
+            <input id="specialtyInput" class="searchFormField typeahead" placeholder="Enter specialty..." type="text" value="" name="specialty">
+            <input id="procedureInput" class="searchFormField typeahead" placeholder="Enter procedure code..." type="text" value="">
+            <div id="search_buttonloader_wrapper">
+                <button id="searchbtn" type="button">Search</button>
+                <span id="loadingIcon"><img src="../content/static/ajax-loader.gif" /></span>
+            </div>
+
         </div>
     </div>
     <div id="map-canvas"></div>
