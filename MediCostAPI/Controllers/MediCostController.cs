@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Script.Serialization;
 using MediCostAPI.Models;
+using MediCostAPI.Services;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -20,61 +21,29 @@ namespace MediCostAPI.Controllers
             var providerTable = new DataTable();
             var costTable = new DataTable();
             var config = new ConfigManager();
+            var dataSanitizer = new DataSanitizerAgent();
+            var dbAgent = new DbSprocAgent();
 
             string connString = config.getConnectionString();
 
             try
             {
-                using (SqlConnection con = new SqlConnection(connString))
+                officeTable = dbAgent.ExecuteSproc("spGetOfficesByCity", new Dictionary<string, string>
                 {
-                    // StoreProcedure retrieves one line per unique provider NPI
-                    using (SqlCommand cmd = new SqlCommand("spGetOfficesByCity", con))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.Add("@city", SqlDbType.VarChar).Value = queryModel.City;
-                        //cmd.Parameters.Add("@specialty", SqlDbType.VarChar).Value = queryModel.specialty ?? Convert.DBNull;
+                    { "@city", queryModel.City}
+                });
 
-                        con.Open();
-                        cmd.ExecuteNonQuery();
-                        da = new SqlDataAdapter(cmd);
+                providerTable = dbAgent.ExecuteSproc("spGetProvidersByCity", new Dictionary<string, string>
+                {
+                    { "@city", queryModel.City},
+                    { "@specialty", queryModel.Specialty}
+                });
 
-                        // Query DB and fill DataTable
-                        da.Fill(officeTable);
-                        con.Close();
-                    }
-
-                    // StoreProcedure retrieves one line per unique provider NPI
-                    using (SqlCommand cmd = new SqlCommand("spGetProvidersByCity", con))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.Add("@city", SqlDbType.VarChar).Value = queryModel.City;
-                        cmd.Parameters.Add("@specialty", SqlDbType.VarChar).Value = queryModel.Specialty ?? Convert.DBNull;
-
-                        con.Open();
-                        cmd.ExecuteNonQuery();
-                        da = new SqlDataAdapter(cmd);
-
-                        // Query DB and fill DataTable
-                        da.Fill(providerTable);
-                        con.Close();
-                    }
-
-                    using (SqlCommand cmd = new SqlCommand("spGetProviderCostsByCity", con))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.Add("@city", SqlDbType.VarChar).Value = queryModel.City;
-                        cmd.Parameters.Add("@specialty", SqlDbType.VarChar).Value = queryModel.Specialty ?? Convert.DBNull;
-
-                        con.Open();
-                        cmd.CommandTimeout = 0;
-                        cmd.ExecuteNonQuery();
-                        da = new SqlDataAdapter(cmd);
-
-                        // Query DB and fill DataTable
-                        da.Fill(costTable);
-                        con.Close();
-                    }
-                }
+                costTable = dbAgent.ExecuteSproc("spGetProviderCostsByCity", new Dictionary<string, string>
+                {
+                    { "@city", queryModel.City},
+                    { "@specialty", queryModel.Specialty}
+                });
             }
             catch (Exception exp)
             {
@@ -91,15 +60,15 @@ namespace MediCostAPI.Controllers
             {
                 var office = new Office()
                 {
-                    AddressID = r.ItemArray[0].ToString(),
-                    Street1 = r.ItemArray[1].ToString(),
-                    Street2 = r.ItemArray[2].ToString(),
-                    City = r.ItemArray[3].ToString(),
-                    Zip = r.ItemArray[4].ToString(),
-                    State = r.ItemArray[5].ToString(),
-                    Country = r.ItemArray[6].ToString(),
-                    Latitude = r.ItemArray[8].ToString(),
-                    Longitude = r.ItemArray[7].ToString(),
+                    AddressID = r["AddressID"].ToString(),
+                    Street1 = dataSanitizer.StringToTitleCase(r["nppes_provider_street1"].ToString()),
+                    Street2 = dataSanitizer.StringToTitleCase(r["nppes_provider_street2"].ToString()),
+                    City = dataSanitizer.StringToTitleCase(r["nppes_provider_city"].ToString()),
+                    Zip = r["nppes_provider_zip"].ToString(),
+                    State = r["nppes_provider_state"].ToString(),
+                    Country = r["nppes_provider_country"].ToString(),
+                    Latitude = r["lng"].ToString(), //lat and lng are switched at DB level. Temporary fix here.
+                    Longitude = r["lat"].ToString(),
                     Providers = new Dictionary<string, Provider>(),
                 };
                 officesList.Add(office);
@@ -110,23 +79,23 @@ namespace MediCostAPI.Controllers
             {
                 var provider = new Provider()
                 {
-                    Npi = r[0].ToString(),
-                    AddressID = r[1].ToString(),
-                    Street1 = r[2].ToString(),
-                    Street2 = r[3].ToString(),
-                    City = r[4].ToString(),
-                    Zip = r[5].ToString(),
-                    State = r[6].ToString(),
-                    Country = r[7].ToString(),
-                    Latitude = r[9].ToString(),
-                    Longitude = r[8].ToString(),
-                    LastName = r[10].ToString(),
-                    FirstName = r[11].ToString(),
-                    MiddleInitial = r[12].ToString(),
-                    Credentials = r[13].ToString(),
-                    Gender = r[14].ToString(),
-                    EntityCode = r[15].ToString(),
-                    Specialty = r[16].ToString(),
+                    Npi = r["npi"].ToString(),
+                    AddressID = r["AddressID"].ToString(),
+                    Street1 = dataSanitizer.StringToTitleCase(r["nppes_provider_street1"].ToString()),
+                    Street2 = dataSanitizer.StringToTitleCase(r["nppes_provider_street2"].ToString()),
+                    City = dataSanitizer.StringToTitleCase(r["nppes_provider_city"].ToString()),
+                    Zip = r["nppes_provider_zip"].ToString(),
+                    State = r["nppes_provider_state"].ToString(),
+                    Country = r["nppes_provider_country"].ToString(),
+                    Latitude = r["lng"].ToString(),
+                    Longitude = r["lat"].ToString(),
+                    LastName = dataSanitizer.StringToTitleCase(r["nppes_provider_last_org_name"].ToString()),
+                    FirstName = dataSanitizer.StringToTitleCase(r["nppes_provider_first_name"].ToString()),
+                    MiddleInitial = r["nppes_provider_mi"].ToString(),
+                    Credentials = r["nppes_credentials"].ToString(),
+                    Gender = r["nppes_provider_gender"].ToString(),
+                    EntityCode = r["nppes_entity_code"].ToString(),
+                    Specialty = r["provider_type"].ToString(),
                     Costs = new Dictionary<string, Cost>(),
                 };
                 providersList.Add(provider);
@@ -137,37 +106,37 @@ namespace MediCostAPI.Controllers
             {
                 var cost = new Cost()
                 {
-                    Npi = r[0].ToString(),
-                    AddressID = r[1].ToString(),
-                    MedicareParticipationIndicator = r[2].ToString(),
-                    PlaceOfService = r[3].ToString(),
-                    hcpcsCode = r[4].ToString(),
-                    LineServiceCount = r[5].ToString(),
-                    BenefitsUniqueCount = r[6].ToString(),
-                    BenefitsDayServiceCount = r[7].ToString(),
-                    AvgMedicareAllowedAmount = r[8].ToString(),
-                    AvgMedicareAllowedAmountStDev = r[9].ToString(),
-                    AvgSubmittedChargeAmount = r[10].ToString(),
-                    AvgSubmittedChargeAmountStDev = r[11].ToString(),
-                    AvgMedicarePaymentAmount = r[12].ToString(),
-                    AvgMedicarePaymentAmountStDev = r[13].ToString(),
-                    Street1 = r[14].ToString(),
-                    Street2 = r[15].ToString(),
-                    City = r[16].ToString(),
-                    Zip = r[17].ToString(),
-                    State = r[18].ToString(),
-                    Country = r[19].ToString(),
-                    Latitude = r[21].ToString(),
-                    Longitude = r[20].ToString(),
-                    hcpcsCode2 = r[22].ToString(),
-                    HcpcsDescription = r[23].ToString(),
-                    LastName = r[24].ToString(),
-                    FirstName = r[25].ToString(),
-                    MiddleInitial = r[26].ToString(),
-                    Credentials = r[27].ToString(),
-                    Gender = r[28].ToString(),
-                    EntityCode = r[29].ToString(),
-                    Specialty = r[30].ToString(),
+                    Npi = r["npi"].ToString(),
+                    AddressID = r["AddressID"].ToString(),
+                    MedicareParticipationIndicator = r["medicare_participation_indicator"].ToString(),
+                    PlaceOfService = r["place_of_service"].ToString(),
+                    hcpcsCode = r["hcpcs_code"].ToString(),
+                    LineServiceCount = r["line_srvc_cnt"].ToString(),
+                    BenefitsUniqueCount = r["bene_unique_cnt"].ToString(),
+                    BenefitsDayServiceCount = r["bene_day_srvc_cnt"].ToString(),
+                    AvgMedicareAllowedAmount = r["average_Medicare_allowed_amt"].ToString(),
+                    AvgMedicareAllowedAmountStDev = r["stdev_Medicare_allowed_amt"].ToString(),
+                    AvgSubmittedChargeAmount = r["average_submitted_chrg_amt"].ToString(),
+                    AvgSubmittedChargeAmountStDev = r["stdev_submitted_chrg_amt"].ToString(),
+                    AvgMedicarePaymentAmount = r["average_Medicare_payment_amt"].ToString(),
+                    AvgMedicarePaymentAmountStDev = r["stdev_Medicare_payment_amt"].ToString(),
+                    Street1 = dataSanitizer.StringToTitleCase(r["nppes_provider_street1"].ToString()),
+                    Street2 = dataSanitizer.StringToTitleCase(r["nppes_provider_street2"].ToString()),
+                    City = dataSanitizer.StringToTitleCase(r["nppes_provider_city"].ToString()),
+                    Zip = r["nppes_provider_zip"].ToString(),
+                    State = r["nppes_provider_state"].ToString(),
+                    Country = r["nppes_provider_country"].ToString(),
+                    Latitude = r["lng"].ToString(),
+                    Longitude = r["lat"].ToString(),
+                    hcpcsCode2 = r[22].ToString(), //TODO: redundant, test whether it can be removed
+                    HcpcsDescription = r["hcpcs_description"].ToString(),
+                    LastName = dataSanitizer.StringToTitleCase(r["nppes_provider_last_org_name"].ToString()),
+                    FirstName = dataSanitizer.StringToTitleCase(r["nppes_provider_first_name"].ToString()),
+                    MiddleInitial = r["nppes_provider_mi"].ToString(),
+                    Credentials = r["nppes_credentials"].ToString(),
+                    Gender = r["nppes_provider_gender"].ToString(),
+                    EntityCode = r["nppes_entity_code"].ToString(),
+                    Specialty = dataSanitizer.StringToTitleCase(r["provider_type"].ToString()),
                 };
                 costsList.Add(cost);
             }

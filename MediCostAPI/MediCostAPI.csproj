@@ -172,7 +172,6 @@
     <Compile Include="Controllers\LocationsController.cs" />
     <Compile Include="Controllers\MediCostController.cs" />
     <Compile Include="Controllers\SpecialtiesController.cs" />
-    <Compile Include="DatTableToJSON.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -190,11 +189,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Services\DataSanitizerAgent.cs" />
     <Compile Include="Services\DbSprocAgent.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\MediCost.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -209,6 +208,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\" />
+    <Folder Include="Content\" />
     <Folder Include="Providers\" />
     <Folder Include="Results\" />
   </ItemGroup>

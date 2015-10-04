@@ -16,7 +16,7 @@ namespace MediCostAPI.Controllers
         public string GetSpecialties()
         {
             var dbAgent = new DbSprocAgent();
-            var specialtiesTable = dbAgent.SendSproc("spGetSpecialties");
+            var specialtiesTable = dbAgent.ExecuteSproc("spGetSpecialties");
 
             var specialties = new Dictionary<string, Specialty>();
 

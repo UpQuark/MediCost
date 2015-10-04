@@ -8,6 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using MediCostAPI.Services;
+using System.Globalization;
 
 namespace MediCostAPI.Controllers
 {
@@ -16,15 +17,17 @@ namespace MediCostAPI.Controllers
         public string GetLocations()
         {
             var dbAgent = new DbSprocAgent();
-            var citiesTable = dbAgent.SendSproc("spGetLocations");
+            var citiesTable = dbAgent.ExecuteSproc("spGetLocations");
 
             var locations = new List<City>();
 
             foreach (DataRow row in citiesTable.Rows)
             {
+                var NameCaseFixed = row["City"].ToString().ToLower();
+                NameCaseFixed = new CultureInfo("en-US").TextInfo.ToTitleCase(NameCaseFixed);
                 locations.Add(new City
                 {
-                    Name = row["City"].ToString(),
+                    Name = NameCaseFixed,
                     State = row["State"].ToString()
                 });
             }

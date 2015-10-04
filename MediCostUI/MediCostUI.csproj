@@ -172,11 +172,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\static\ajax-loader.gif" />
-    <Content Include="Content\static\blue-marker.png" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\static\sorting\downsort.png" />
-    <Content Include="Content\static\here.png" />
     <Content Include="Content\static\logo3.jpg" />
     <Content Include="Content\static\logo3.png" />
     <Content Include="Content\MediCost.css" />

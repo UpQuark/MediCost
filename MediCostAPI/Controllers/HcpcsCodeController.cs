@@ -16,7 +16,7 @@ namespace MediCostAPI.Controllers
         public string GetHcpcsCode()
         {
             var dbAgent = new DbSprocAgent();
-            var hcpcsTable = dbAgent.SendSproc("spGethcpcsCode");
+            var hcpcsTable = dbAgent.ExecuteSproc("spGethcpcsCode");
 
             var hcpcs = new Dictionary<string, HcpcsCode>();
 
