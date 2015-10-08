@@ -46,6 +46,7 @@ MediCost.prototype.resetUI = function () {
     this.MediCostPageElems.officeTable.clear();
     this.MediCostPageElems.leftPanel.clear();
     this.MediCostPageElems.rightPanel.clear();
+    this.MediCostPageElems.header.reset();
 };
 
 //////// Getters ////////
@@ -173,54 +174,68 @@ MediCost.prototype.Header.prototype.init = function () {
     });
 };
 
+MediCost.prototype.Header.prototype.reset = function () {
+    $("#addressInput, #specialtyInput, #procedureInput").removeClass("badInput");
+    $("#errorText").hide();
+}
+
 // Begins execution of office search
 MediCost.prototype.Header.prototype.search = function () {
     var MediCost = this.MediCost;
-
-    MediCost.resetUI();
-
     var address = null;
     var specialty = null;
     var procedureCode = null;
 
-    // Clear any markers currently on map
-    this.MediCostPageElems.mapCanvas.clearOverlays();
+    // Gather user data and validate
+    address = $("#addressInput").val();
+    specialty = $("#specialtyInput").val();
+    procedureCode = $("#procedureInput").val();
 
-    // Clear panels
-    this.MediCostPageElems.rightPanel.clear();
-    this.MediCostPageElems.leftPanel.clear();
+    if (isNullOrWhitespace(address) || isNullOrWhitespace(specialty)) {
+        $("#errorText").html("Please enter both a city and a specialty").fadeIn();
+        if (isNullOrWhitespace(address))
+            $("#addressInput").addClass("badInput");
 
-    // Move header to top of screen
-    var fades = function () {
-        return $.when($("#centerSearchText").fadeOut(), $("#headerImage").fadeOut(), $("#searchbtn").fadeOut()).done()
+        if (isNullOrWhitespace(specialty))
+            $("#specialtyInput").addClass("badInput");
     }
+    else {
+        MediCost.resetUI();
 
-    $.when(fades()).done(function () {
-        var cssUpdate = function () {
-            return $.when($("#headerImage").css({ "left": "12px", "margin-left": "12px", "margin-top": "4px", "float": "left" }),
-                        $("#header").animate({
-                            top: "0px",
-                            marginTop: "0px",
-                        }, 500)).done();
+        // Clear any markers currently on map
+        this.MediCostPageElems.mapCanvas.clearOverlays();
+
+        // Clear panels
+        this.MediCostPageElems.rightPanel.clear();
+        this.MediCostPageElems.leftPanel.clear();
+
+        // Move header to top of screen
+        var fades = function () {
+            return $.when($("#centerSearchText").fadeOut(), $("#headerImage").fadeOut(), $("#searchbtn").fadeOut()).done()
         }
-        $.when(cssUpdate()).done(function () {
-            $("#headerImage").fadeIn();
-            $("#searchbtn").fadeIn();
-            $("#search_buttonloader_wrapper").css('display', 'inline-block')
-            $("#header").css({"box-shadow" : "0px 0px 5px 0px rgba(42,42,42,1.2)"})
-            MediCost.MediCostPageElems.mapCanvas.initialize();
-            MediCost.MediCostPageElems.mapCanvas.fillFrame();
 
-            // Gather user data and validate
-            address = $("#addressInput").val();
-            specialty = $("#specialtyInput").val();
-            procedureCode = $("#procedureInput").val();
+        $.when(fades()).done(function () {
+            var cssUpdate = function () {
+                return $.when($("#headerImage").css({ "left": "12px", "margin-left": "12px", "margin-top": "4px", "float": "left" }),
+                            $("#header").animate({
+                                top: "0px",
+                                marginTop: "0px",
+                            }, 500)).done();
+            }
+            $.when(cssUpdate()).done(function () {
+                $("#headerImage").fadeIn();
+                $("#searchbtn").fadeIn();
+                $("#search_buttonloader_wrapper").css('display', 'inline-block')
+                $("#header").css({ "box-shadow": "0px 0px 5px 0px rgba(42,42,42,1.2)" })
+                MediCost.MediCostPageElems.mapCanvas.initialize();
+                MediCost.MediCostPageElems.mapCanvas.fillFrame();
 
-            // TODO: Add actual address validation
-            MediCost.MediCostPageElems.mapCanvas.mapOfficesFromAddress(address, specialty);
-            $("#map-canvas").fadeIn();
+                // TODO: Add actual address validation
+                MediCost.MediCostPageElems.mapCanvas.mapOfficesFromAddress(address, specialty);
+                $("#map-canvas").fadeIn();
+            });
         });
-    });  
+    }
 };
 
 
@@ -240,7 +255,6 @@ MediCost.prototype.MapCanvas = function (MediCost, MediCostData, MediCostPageEle
 };
 
 MediCost.prototype.MapCanvas.prototype.initialize = function () {
-
     var latlng = new google.maps.LatLng(42.492786, -92.342578);
     var mapOptions = {
         zoom: 8,
@@ -600,11 +614,3 @@ function isNullOrWhitespace(input) {
 
     return input.replace(/\s/g, '').length < 1;
 }
-
-
-
-
-
-
-
-
