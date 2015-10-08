@@ -256,25 +256,6 @@ body .modal {
     width: 400px;
 }
 
-#searchbtn {
-    height: 31px;
-    width: 85px;
-    padding: 5px;
-    margin-top: 14px;
-    border-color:#eee; border-style:solid;
-    box-shadow: 0px 0px 5px 0px rgba(42,42,42,.75);
-    border-width:1px;
-    font-family: Verdana;
-    font-weight: 300;
-    font-size: .7em;
-    color: #222;
-    background-color: #fff;
-    vertical-align: bottom;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-}
-
 .searchFormField{
     height: 23px;
     padding:3px; 
@@ -289,18 +270,37 @@ body .modal {
     vertical-align: bottom;
 }
 
+#searchbtn {
+    height: 31px;
+    width: 85px;
+    padding: 5px;
+    border-color:#eee; border-style:solid;
+    box-shadow: 0px 0px 5px 0px rgba(42,42,42,.75);
+    border-width:1px;
+    font-family: Verdana;
+    font-weight: 300;
+    font-size: .7em;
+    color: #222;
+    background-color: #fff;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 14px;
+    display: block;
+}
+
 #loadingIcon {
     display: none;
     position: absolute;
-    right: 20px;
+    right: 0px;
     bottom: 3px;
 }
 
 #search_buttonloader_wrapper {
-    width: 200px;
+    width: 125px;
     margin-left: auto;
     margin-right: auto;
     position: relative;
+    vertical-align: top;
 }
 
 #searchbtn:hover {
