@@ -1,105 +1,4 @@
 ﻿/******************************************************************
-CSS Reset
-******************************************************************/
-
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-  font-weight: normal;
-  -webkit-font-smoothing: antialiased;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
-  display: block;
-}
-body {
-  line-height: 1;
-  overflow-x: hidden;
-}
-ol, ul {
-  list-style: none;
-}
-blockquote, q {
-  quotes: none;
-}
-blockquote:before, blockquote:after, q:before, q:after {
-  content: '';
-  content: none;
-}
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-a {
-  outline: none;
-  text-decoration: none;
-}
-
-/******************************************************************
-Print Styles - Used for paged media and in print preview mode
-******************************************************************/
-
-@media print {
-*  {
-      background: transparent !important;
-      color: black !important;
-      text-shadow: none !important;
-      filter:none !important;
-      -ms-filter: none !important;
-    }
-
-    a, a:visited {
-      text-decoration: underline;
-    }
-
-    a[href]:after {
-      content: " (" attr(href) ")";
-    }
-
-    abbr[title]:after {
-      content: " (" attr(title) ")";
-    }
-
-     .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after {
-    content: "";
-    }
-
-    pre, blockquote {
-      border: 1px solid #999;
-      page-break-inside: avoid;
-    }
-
-    thead {
-      display: table-header-group;
-    }
-
-    tr, img {
-      page-break-inside: avoid;
-    }
-
-    img {
-      max-width: 100% !important;
-    }
-
-     @page {
-    margin: 0.5cm;
-    }
-
-    p, h2, h3 {
-      orphans: 3;
-      widows: 3;
-    }
-
-    h2, h3 {
-      page-break-after: avoid;
-    }
-}
-
-/******************************************************************
 Text Selection Styles
 ******************************************************************/
 
@@ -110,11 +9,6 @@ Text Selection Styles
 }
 
 ::-moz-selection {
-  background:#4096ee;
-  color:#fff;
-}
-
-::-webkit-selection {
   background:#4096ee;
   color:#fff;
 }
@@ -174,6 +68,15 @@ html, body, #map-canvas {
   margin: 0px;
   padding: 0px;
   background-color: rgb(34,53,95);
+  font-family: Arial, sans-serif;
+}
+
+.body-content {
+    margin: 0px 0px 0px 0px;
+}
+
+.container { 
+    padding: 0px 0px 0px 0px;
 }
 
 #map-canvas {
@@ -193,6 +96,24 @@ body .modal {
   font-weight: bold;
   font-size: 20px;
 
+}
+
+
+/* Generic UI elements 
+********************************************/
+.medicosts-panel {
+    background-color: rgb(34,53,95);
+    box-shadow: 0px 0px 5px 0px rgba(42,42,42,1.2);
+    
+    z-index: 1000;
+    position: absolute;
+
+    font-size: 13px;
+    font-family: Verdana;
+    color: #fff;    
+    word-wrap:break-word;
+
+    display: none;
 }
 
 /* Header elements 
@@ -240,6 +161,7 @@ body .modal {
     display: block;
 }
 
+
 /* Search */
 #search_components {
     text-align: center;
@@ -256,24 +178,11 @@ body .modal {
     width: 400px;
 }
 
-.searchFormField{
-    height: 23px;
-    padding:3px; 
-    border-color:#eee; border-style:solid;
-    text-shadow:0px 0px 0px rgba(42,42,42,.0);
-    box-shadow: 0px 0px 5px 0px rgba(42,42,42,.75);
-    border-width:1px;
-    background-color: #fff;
-    color: #222;
-    margin-left: 3px;
-    margin-right: 3px;
-    vertical-align: bottom;
-}
-
 #searchbtn {
-    height: 31px;
+    height: 33px;
     width: 85px;
     padding: 5px;
+    margin-top: 14px;
     border-color:#eee; border-style:solid;
     box-shadow: 0px 0px 5px 0px rgba(42,42,42,.75);
     border-width:1px;
@@ -282,25 +191,40 @@ body .modal {
     font-size: .7em;
     color: #222;
     background-color: #fff;
+    vertical-align: bottom;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 14px;
     display: block;
+}
+
+.searchFormField{
+    height: 33px;
+    padding:6px; 
+    border-color:#eee; border-style:solid;
+    text-shadow:0px 0px 0px rgba(42,42,42,.0);
+    box-shadow: 0px 0px 5px 0px rgba(42,42,42,.75);
+    border-width:1px;
+    border-radius:0px;
+    background-color: #fff;
+    color: #222;
+    margin-left: 3px;
+    margin-right: 3px;
+    vertical-align: bottom;
+    font-size: 0.9em;
 }
 
 #loadingIcon {
     display: none;
     position: absolute;
-    right: 0px;
+    right: 20px;
     bottom: 3px;
 }
 
 #search_buttonloader_wrapper {
-    width: 125px;
+    width: 200px;
     margin-left: auto;
     margin-right: auto;
     position: relative;
-    vertical-align: top;
 }
 
 #searchbtn:hover {
@@ -337,6 +261,9 @@ input.searchinput:hover, input.searchinput:focus {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
 }
 
+.input-group {
+    margin-left: auto;
+    margin-right: auto;
 #errorText {
     font-family: Verdana;
     font-size: .8em;
@@ -351,53 +278,51 @@ input.searchinput:hover, input.searchinput:focus {
 /* Left panel elements 
 ********************************************/
 #left-panel {
-    background-color: rgb(34,53,95);
-    box-shadow: 0px 0px 5px 0px rgba(42,42,42,1.2);
-    
-    z-index: 1000;
-    position: absolute;
-    bottom: 6px;
-    left: 6px;
-    right: 0;
-    width: 500px;
+    bottom: 6px !important;
+    left: 6px !important;
+    right: 0 !important;
+    top: auto !important;
+
+    width: 650px;
+    height: 350px;
     margin-right: auto;
     padding: 14px;
+
     max-height: 40%;
+    max-width: 49%;
+    min-height: 20%;
+    min-width: 25%;
+}
 
-    font-size: 13px;
-    font-family: Verdana;
-    color: #fff;    
-    word-wrap:break-word;
-
-    display: none;
+#cost-table{
+    height: 100%;
+    padding-bottom: 60px;
 }
 
 #left-panel td {
     padding: 4px;
 }
 
+#left-panel tr{
+    cursor: pointer;
+}
+
 /* Office table 
 ********************************************/
 #offices-panel {
-    background-color: rgb(34,53,95);
-    box-shadow: 0px 0px 5px 0px rgba(42,42,42,1.2);
-    
-    z-index: 1000;
-    position: absolute;
-    bottom: 6px;
-    left: 0;
-    right: 6px;
+    bottom: 6px !important;
+    left: 0 !important;
+    right: 6px !important;
+    top: auto !important;
     width: 500px;
+    height: 350px;
     margin-left: auto;
     padding: 14px;
+
     max-height: 40%;
-
-    font-size: 13px;
-    font-family: Verdana;
-    color: #fff;    
-    word-wrap:break-word;
-
-    display: none;
+    max-width: 49%;
+    min-height: 20%;
+    min-width: 25%;
 }
 
 #offices-panel table-head td {
@@ -411,32 +336,40 @@ input.searchinput:hover, input.searchinput:focus {
     cursor: pointer;
 }
 
-#office-table{
-    max-height: 300px;
+#office-table {
+    height: 100%;
+    padding-bottom: 60px;
+}
+
+#table_content {
 }
 
 
 /* Right Panel
 ********************************************/
 #right-panel{
-    position:absolute;
-    top: 90px;
-    right: 6px;
-    float: right;
-    max-height: 80%;
+    top: 90px !important;
+    right: 6px !important;
+    left: auto !important;
     width: 240px;
+    height: 190px;
     padding: 14px;
     z-index: 1000;
 
-    font-size: 13px;
-    font-family: Verdana;
-    color: #fff;    
-    word-wrap:break-word;
-    
-    background-color: rgb(34,53,95);
-    box-shadow: 0px 0px 5px 0px rgba(42,42,42,1.2);
+    max-height: 40%;
+    max-width: 20%;
+    min-height: 10%;
+    min-width: 10%;
+}
 
-    display: none;
+#providerList {
+    height: 100%;
+    
+}
+
+#providersListTable {
+    height: 100%;
+    padding-bottom: 83px;
 }
 
 #right-panel td{
@@ -472,6 +405,7 @@ input.searchinput:hover, input.searchinput:focus {
 table.scrollTable {
     display: table;
     width: 100%;
+    padding-left: 30px;
 }
 table.scrollTable thead, table.scrollTable tbody {
     float: left;
@@ -479,7 +413,7 @@ table.scrollTable thead, table.scrollTable tbody {
 }
 table.scrollTable tbody {
     overflow: auto;
-    height: 150px;
+    height: 100%;
 }
 table.scrollTable tr {
     width: 100%;
@@ -491,7 +425,7 @@ table.scrollTable th, table.scrollTable td {
     max-width: 60px;
 }
 
-/* Sorting */
+/* sorting */
 .sort-marker{
     height: 9px;
     width: 9px;
@@ -531,13 +465,13 @@ img[src*="gstatic.com/"], img[src*="googleapis.com/"] {
     width: 11px;
 }
 
-::-webkit-scrollbar-thumb{background-color:rgb(242, 242, 242); border-radius: 1;}
+::-webkit-scrollbar-thumb{background-color:rgb(242, 242, 242); border-radius: 1px;}
 ::-webkit-scrollbar-thumb:hover{
     background-color:rgb(252, 252, 252);
     cursor: pointer;
 }
 
-::-webkit-scrollbar-track{background-color:rgbrgb(34,53,95);}
+::-webkit-scrollbar-track{background-color:rgb(34,53,95);}
 
 
 /* Typeahead
