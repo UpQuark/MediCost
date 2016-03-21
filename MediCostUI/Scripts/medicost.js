@@ -231,8 +231,9 @@ MediCost.prototype.Header.prototype.search = function () {
             $.when(cssUpdate()).done(function () {
                 $("#headerImage").fadeIn();
                 $("#searchbtn").fadeIn();
-                $("#search_buttonloader_wrapper").css('display', 'inline-block')
-                $("#header").css({ "box-shadow": "0px 0px 5px 0px rgba(42,42,42,1.2)" })
+                $("#searchbtn").css({'margin-left': '0px', 'margin-top' : '0px'})
+                $("#search_buttonloader_wrapper").css('display', 'inline-block');
+                $("#header").css({ "box-shadow": "0px 0px 5px 0px rgba(42,42,42,1.2)" });
                 MediCost.MediCostPageElems.mapCanvas.initialize();
                 MediCost.MediCostPageElems.mapCanvas.fillFrame();
 
