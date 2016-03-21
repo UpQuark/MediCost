@@ -11,39 +11,38 @@
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAX3zGjL4x7v95Ku35GeeAbEfWyciUckCY&sensor=false&libraries=geometry"></script>
 </head>
 <body id="body">
-    <div id="right-panel">
-        <div>
-            <h2> Selected Office </h2>
-        </div>
+    <div id="right-panel" class="medicosts-panel">
+        <h2> Selected Office </h2>
         <div>
             <span id="address"></span><br />
             <span id="city"></span>,&nbsp;
             <span id="state"></span>&nbsp;
             <span id="zip"></span>
         </div><br />
-        <div id="providerList">
-            <h2>Providers</h2>
-            <table id="providersListTable"></table>
-        </div>
-    </div>
-    <div id="left-panel">
-        <div>
-            <h2 id="leftPanelProviderName"></h2>
-            <table class="scrollTable" id="cost-table">
-                <thead id="table_header">
-                    <tr class="table-head">
-                        <td>hcpcs <span class="sort-marker"></td>
-                        <td>Description <span class="sort-marker"></td>
-                        <td>Allowed <span class="sort-marker"></td>
-                        <td>Submitted <span class="sort-marker"></td>
-                        <td>Payment <span class="sort-marker"></td>
-                        <td>Estimate <span class="sort-marker"></td>
-                    </tr>
-                </thead>
-                <tbody id="table_content"></tbody>
-            </table>
-        </div>
+        <h2>Providers</h2>
+        <table id="providersListTable" class="scrollTable">
+            <thead id="table_header">
+            </thead>
+            <tbody>
 
+            </tbody>
+        </table>
+    </div>
+    <div id="left-panel" class="medicosts-panel">
+        <h2 id="leftPanelProviderName"></h2>
+        <table class="scrollTable" id="cost-table">
+            <thead id="table_header">
+                <tr class="table-head">
+                    <td>HCPCS <span class="sort-marker"></td>
+                    <td>Description <span class="sort-marker"></td>
+                    <td>Allowed <span class="sort-marker"></td>
+                    <td>Submitted <span class="sort-marker"></td>
+                    <td>Payment <span class="sort-marker"></td>
+                    <td>Estimate <span class="sort-marker"></td>
+                </tr>
+            </thead>
+            <tbody id="table_content"></tbody>
+        </table>
     </div>
     <div id="header">
         <div id="pageHeaderText">
@@ -64,7 +63,7 @@
         </div>
     </div>
     <div id="map-canvas"></div>
-    <div id="offices-panel">
+    <div id="offices-panel" class="medicosts-panel">
         <h2>All Offices</h2>
         <table class="scrollTable" id="office-table">
             <thead id="table_header">

@@ -38,6 +38,5 @@ namespace MediCostAPI.Models
         public String Gender { get; set; }
         public String EntityCode { get; set; }
         public String Specialty { get; set; }
-
     }
 }

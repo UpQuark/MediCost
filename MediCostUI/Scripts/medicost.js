@@ -1,19 +1,22 @@
 ﻿/***********************************************
- *  MediCost master class
+ *  MediCost application class
  ***********************************************/
-// Constructor
+// MediCost application class.
 function MediCost() {
 
     this.MediCostData = {      
-        // Central data structures
-        offices:     null,                             // will hold all offices acquired from database
-        specialties: null,
-        hcpcsCodes:  null,
+        // Central data model
+        offices: null,              // Holds all offices retrieved from database
+
+        // Typeahead caches (unused so far)
+        specialties: null,          // Holds all medical specialties from DB
+        hcpcsCodes: null,           // Holds all hcpcs codes and descriptions from DB
+        cities: null,               // Holds all possible cities/towns/locations from DB
         
         // Miscellany
-        activeMarker: null,
-        procedure: "",
-        activeCost: null,
+        activeMarker: null,         // Actively selected Google Maps marker
+        procedure: "",              // Active Procedure (HCPS code)
+        activeCost: null,           // Redundant with procedure?
     };
 
     this.MediCostPageElems = {
@@ -24,17 +27,18 @@ function MediCost() {
         officeTable : null
     };
 
-    this.MediCostPageElems.mapCanvas   = new this.MapCanvas(this, this.MediCostData, this.MediCostPageElems);
-    this.MediCostPageElems.leftPanel   = new this.LeftPanel(this, this.MediCostData, this.MediCostPageElems);
-    this.MediCostPageElems.rightPanel  = new this.RightPanel(this, this.MediCostData, this.MediCostPageElems);
-    this.MediCostPageElems.officeTable = new this.OfficeTable(this, this.MediCostData, this.MediCostPageElems);
-    this.MediCostPageElems.header      = new this.Header(this, this.MediCostData, this.MediCostPageElems);
-    this.apiAgent = new this.ApiAgent(this.MediCostData);
+    // Only NEED to pass 'this', other references passed to allow for more brevity in code
+    this.MediCostPageElems.mapCanvas   = new this.MapCanvas     (this, this.MediCostData, this.MediCostPageElems);
+    this.MediCostPageElems.leftPanel   = new this.LeftPanel     (this, this.MediCostData, this.MediCostPageElems);
+    this.MediCostPageElems.rightPanel  = new this.RightPanel    (this, this.MediCostData, this.MediCostPageElems);
+    this.MediCostPageElems.officeTable = new this.OfficeTable   (this, this.MediCostData, this.MediCostPageElems);
+    this.MediCostPageElems.header      = new this.Header        (this, this.MediCostData, this.MediCostPageElems);
+    this.apiAgent                      = new this.ApiAgent      (this.MediCostData);
     
     this.MediCostPageElems.header.init();
 }
 
-// Empty contents of central Data structures
+// Empty contents of data model
 MediCost.prototype.clearData = function() {
     offices = null;
 };
@@ -79,10 +83,8 @@ MediCost.prototype.Header = function (MediCost, MediCostData, MediCostPageElems)
     });
 };
 
-// UI Init
-// TODO: Stick somewhere the hell else
+// UI Init, initializes typeaheads
 MediCost.prototype.Header.prototype.init = function () {
-    // Attach UI event handlers
     var MediCost = this.MediCost;
     var apiAgent = new MediCost.ApiAgent();
     
@@ -166,6 +168,10 @@ MediCost.prototype.Header.prototype.init = function () {
      */
     $('#searchbtn').click(function () {
         MediCost.MediCostPageElems.header.search();
+    });
+
+    $('#progressBar').progressbar({
+        value: false
     });
 
     $(window).resize(function () {
@@ -437,6 +443,12 @@ MediCost.prototype.LeftPanel = function (MediCost, MediCostData, MediCostPageEle
     this.MediCost = MediCost;
 
     this.currentProvider = null;
+
+    $("#left-panel").resizable({
+        handles: "e, n, ne"
+    });
+
+    //$("#left-panel").draggable();
 };
 
 MediCost.prototype.LeftPanel.prototype.clear = function () {
@@ -452,7 +464,7 @@ MediCost.prototype.LeftPanel.prototype.draw = function (provider) {
     $("#leftPanelProviderName").html(provider.FirstName + " " + provider.LastName);
 
     $.each(provider.Costs, function (a, cost) {
-        var toAppend = '<tr class="leftPanelCostRow"><td class=panel-link>'
+        var toAppend = '<tr class="leftPanelCostRow panel-link"><td>'
                        + cost.hcpcsCode
                        + "</td><td class=panel-link>"
                        + cost.HcpcsDescription
@@ -501,6 +513,12 @@ MediCost.prototype.RightPanel = function (MediCost, MediCostData, MediCostPageEl
     this.MediCost = MediCost;
 
     this.currentOffice = null;
+
+    $("#right-panel").resizable({
+            handles: "w, s, sw"
+    });
+
+    //$("#right-panel").draggable();
 };
 
 MediCost.prototype.RightPanel.prototype.clear = function () {
@@ -520,7 +538,7 @@ MediCost.prototype.RightPanel.prototype.draw = function (office) {
     $("#right-panel #zip").html(office.Zip);
     $("#right-panel #addressId").html(office.AddressID);
 
-    $("#providersListTable").html("");
+    $("#providersListTable tbody").html("");
     $.each(office.Providers, function (a, provider) {
         var middleInitial = typeof provider.MiddleIninitial === "undefined" ? "" : provider.MiddleIninitial + " ";
         var toAppend = '<tr class="rightPanelProviderCell" data-npi="' + provider.Npi + '" data-addressid = "' + provider.AddressID + '"><td class=panel-link>'
@@ -540,7 +558,7 @@ MediCost.prototype.RightPanel.prototype.draw = function (office) {
         var provider = MediCost.getProviderByAddressIdNpi(addressId, npi);
         MediCost.MediCostPageElems.leftPanel.draw(provider);
     })
-
+    //$("#right-panel").css("min-height", $("#right-panel").css('height'));
     $("#right-panel").fadeIn();
 };
 
@@ -554,6 +572,12 @@ MediCost.prototype.OfficeTable = function (MediCost, MediCostData, MediCostPageE
     this.MediCostData = MediCostData;
     this.MediCostPageElems = MediCostPageElems;
     this.MediCost = MediCost;
+
+    $("#offices-panel").resizable({
+        handles: "w, n, nw",
+    });
+
+    //$("#offices-panel").draggable();
 };
 
 MediCost.prototype.OfficeTable.prototype.clear = function () {
@@ -566,7 +590,7 @@ MediCost.prototype.OfficeTable.prototype.draw = function () {
 
     $.each(MediCost.MediCostData.offices, function (a, office) {
         var toAppend = '<tr class="officeTableRow panel-link" data-addressid="' + office.AddressID + '"><td>'
-                       + office.Street1 + ' ' + office.Street2
+                       + office.Street1 //+ ' ' + office.Street2
                        + "</td><td>"
                        + office.City
                        + "</td><td>"
