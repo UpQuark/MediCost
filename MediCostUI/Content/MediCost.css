@@ -192,6 +192,9 @@ body .modal {
     color: #222;
     background-color: #fff;
     vertical-align: bottom;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 
 .searchFormField{
@@ -207,11 +210,24 @@ body .modal {
     margin-left: 3px;
     margin-right: 3px;
     vertical-align: bottom;
+<<<<<<< HEAD
     font-size: 0.9em;
+=======
+>>>>>>> 8e152fb703f3e4d59af1de410f95af8feb73ac0d
 }
 
 #loadingIcon {
-  display: none;
+    display: none;
+    position: absolute;
+    right: 20px;
+    bottom: 3px;
+}
+
+#search_buttonloader_wrapper {
+    width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
 }
 
 #searchbtn:hover {
@@ -248,9 +264,20 @@ input.searchinput:hover, input.searchinput:focus {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
 }
 
+<<<<<<< HEAD
 .input-group {
     margin-left: auto;
     margin-right: auto;
+=======
+#errorText {
+    font-family: Verdana;
+    font-size: .8em;
+    margin-top: 12px;
+}
+
+.badInput {
+    border: solid 1px #d30000;
+>>>>>>> 8e152fb703f3e4d59af1de410f95af8feb73ac0d
 }
 
 
